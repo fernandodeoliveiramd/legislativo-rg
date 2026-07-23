@@ -11,12 +11,12 @@ export default async function HomePage() {
     supabase
       .from('sessoes')
       .select('*')
-      .order('data_sessao', { ascending: false })
+      .order('data_sessao', { ascending: false, nullsFirst: false })
       .limit(4),
     supabase
       .from('proposicoes')
       .select('*')
-      .order('data_protocolo', { ascending: false })
+      .order('data_protocolo', { ascending: false, nullsFirst: false })
       .limit(6),
   ]);
 

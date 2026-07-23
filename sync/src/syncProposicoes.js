@@ -44,10 +44,20 @@ async function fetchYear(year) {
   return rows;
 }
 
+// A origem não garante ordenação estável entre páginas sem um "orders"
+// explícito — o mesmo item pode aparecer em mais de uma página. Sem isso,
+// o upsert quebra com "ON CONFLICT DO UPDATE command cannot affect row a
+// second time" quando duas linhas com o mesmo id caem no mesmo lote.
+function dedupeById(rows) {
+  const byId = new Map();
+  for (const row of rows) byId.set(row.id, row);
+  return [...byId.values()];
+}
+
 export async function syncProposicoes(years) {
   let total = 0;
   for (const year of years) {
-    const rows = await fetchYear(year);
+    const rows = dedupeById(await fetchYear(year));
     if (rows.length === 0) {
       console.log(`[proposicoes] ${year}: nada encontrado`);
       continue;

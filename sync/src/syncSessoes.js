@@ -43,11 +43,19 @@ async function fetchYear(year) {
   return items;
 }
 
+// Mesmo motivo do sync de proposições: a origem não garante páginas sem
+// sobreposição, então deduplicamos por id antes de fazer upsert.
+function dedupeById(items) {
+  const byId = new Map();
+  for (const item of items) byId.set(item.id, item);
+  return [...byId.values()];
+}
+
 export async function syncSessoes(years) {
   let total = 0;
   let totalAtividades = 0;
   for (const year of years) {
-    const items = await fetchYear(year);
+    const items = dedupeById(await fetchYear(year));
     if (items.length === 0) {
       console.log(`[sessoes] ${year}: nada encontrado`);
       continue;
@@ -57,7 +65,8 @@ export async function syncSessoes(years) {
     const { error } = await supabase.from('sessoes').upsert(rows, { onConflict: 'id' });
     if (error) throw new Error(`[sessoes] upsert falhou: ${error.message}`);
 
-    const atividades = items.flatMap((item) => mapAtividades(item.id, item.atividades));
+    const atividadesRaw = items.flatMap((item) => mapAtividades(item.id, item.atividades));
+    const atividades = dedupeById(atividadesRaw);
     if (atividades.length > 0) {
       const { error: errAtiv } = await supabase
         .from('sessao_atividades')

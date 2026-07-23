@@ -14,14 +14,20 @@ export const TIPOS_PROPOSICAO = [
   'VETO',
 ];
 
+// Sempre fixamos America/Sao_Paulo explicitamente: o banco guarda o
+// instante correto em UTC, mas o servidor Next.js (Vercel) roda em UTC por
+// padrão — sem isso, a data exibida mudaria dependendo de onde a função
+// está rodando, em vez de sempre mostrar o horário de Brasília.
+const TZ = 'America/Sao_Paulo';
+
 export function formatDate(iso: string | null): string {
   if (!iso) return '—';
-  return new Date(iso).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+  return new Date(iso).toLocaleDateString('pt-BR', { timeZone: TZ });
 }
 
 export function formatDateTime(iso: string | null): string {
   if (!iso) return '—';
-  return new Date(iso).toLocaleString('pt-BR');
+  return new Date(iso).toLocaleString('pt-BR', { timeZone: TZ });
 }
 
 const STATUS_LABELS: Record<string, string> = {

@@ -8,7 +8,7 @@ export default async function SessoesPage() {
   const { data: sessoes, error } = await supabase
     .from('sessoes')
     .select('*')
-    .order('data_sessao', { ascending: false })
+    .order('data_sessao', { ascending: false, nullsFirst: false })
     .limit(50);
 
   return (

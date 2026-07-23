@@ -15,6 +15,6 @@ export const config = {
     'https://cmriogrande.cittatec.com.br/api/open-data-leg/public/graphql',
   supabaseUrl: required('SUPABASE_URL'),
   supabaseServiceRoleKey: required('SUPABASE_SERVICE_ROLE_KEY'),
-  pageSize: 200,
-  maxPages: 200, // trava de segurança contra loop infinito
+  pageSize: 50, // a API rejeita páginas maiores que isso
+  maxPages: 500, // trava de segurança contra loop infinito
 };

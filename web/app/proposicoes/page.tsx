@@ -15,7 +15,7 @@ export default async function ProposicoesPage({
   let query = supabase
     .from('proposicoes')
     .select('*')
-    .order('data_protocolo', { ascending: false })
+    .order('data_protocolo', { ascending: false, nullsFirst: false })
     .limit(50);
 
   if (q) {
