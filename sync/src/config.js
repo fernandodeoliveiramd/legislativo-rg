@@ -1,7 +1,9 @@
 import 'dotenv/config';
 
+const BOM = String.fromCharCode(0xfeff);
+
 function required(name) {
-  const value = process.env[name];
+  const value = process.env[name]?.split(BOM).join('').trim();
   if (!value) {
     throw new Error(`Variável de ambiente obrigatória ausente: ${name}`);
   }
